@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script defer>
+        fetch("http://localhost:8080/utilisateur/liste")
+            .then(reponse => reponse.json())
+            .then(listeUtilisateur => {
+
+                const ul = document.getElementById('liste-utilisateur');
+
+                for (let utilisateur of listeUtilisateur) {
+                    const li = document.createElement('li')
+                    li.innerHTML = utilisateur.nom + " " + utilisateur.organisations.length
+                    ul.appendChild(li);
+                }
+
+            })
+    </script>
+</head>
+<body>
+
+    <ul id="liste-utilisateur"></ul>
+
+</body>
+</html>
