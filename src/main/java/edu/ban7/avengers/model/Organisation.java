@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,9 @@ public class Organisation {
 
     @ManyToMany(mappedBy = "organisations")
     @JsonView(OrganisationView.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     protected List<Utilisateur> utilisateurs = new ArrayList<>();
 
+    @ManyToOne(optional = false)
+    protected Utilisateur createur;
 }

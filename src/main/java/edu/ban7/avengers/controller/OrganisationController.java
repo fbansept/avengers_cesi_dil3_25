@@ -3,8 +3,14 @@ package edu.ban7.avengers.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.avengers.dao.OrganisationDao;
 import edu.ban7.avengers.model.Organisation;
+import edu.ban7.avengers.model.Utilisateur;
+import edu.ban7.avengers.security.AppUserDetails;
+import edu.ban7.avengers.security.IsUser;
 import edu.ban7.avengers.view.OrganisationView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,11 +53,29 @@ public class OrganisationController {
     }
 
     @DeleteMapping("/organisation/{id}")
-    public boolean supprimer(@PathVariable int id) {
+    @IsUser
+    public ResponseEntity<Void> supprimer(
+            @PathVariable int id,
+            @AuthenticationPrincipal AppUserDetails userDetails) {
+
+        Optional<Organisation> optionalOrganisation = organisationDao.findById(id);
+
+        //si l'organisation n'existe pas, on renvoie un code 404
+        if(optionalOrganisation.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Utilisateur createur = optionalOrganisation.get().getCreateur();
+
+        //si l'utilisateur n'est ni admin, ni créateur de l'organisation on renvoie un code 403
+        if(!userDetails.getUtilisateur().isAdmin() &&
+                !userDetails.getUtilisateur().getId().equals(createur.getId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         organisationDao.deleteById(id);
 
-        return true;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/organisation")

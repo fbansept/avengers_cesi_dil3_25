@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.ban7.avengers.view.OrganisationView;
 import edu.ban7.avengers.view.UtilisateurView;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Utilisateur {
 
     @Column(nullable = false)
     @JsonView(UtilisateurView.class)
+    @NotBlank
     protected String nom;
 
     @Column(nullable = false)
@@ -47,5 +49,8 @@ public class Utilisateur {
             inverseJoinColumns = @JoinColumn(name = "organisation_id"))
     @JsonView(UtilisateurView.class)
     List<Organisation> organisations = new ArrayList<>();
+
+    protected boolean admin;
+
 
 }
