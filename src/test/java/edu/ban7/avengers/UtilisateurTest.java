@@ -46,7 +46,12 @@ public class UtilisateurTest {
         Assertions.assertFalse(violations.isEmpty());
         Assertions.assertEquals(1, violations.size());
         Assertions.assertEquals("nom", violations.iterator().next().getPropertyPath().toString());
-        Assertions.assertEquals("ne doit pas être vide", violations.iterator().next().getMessage());
+        Assertions.assertEquals("NotBlank", violations.iterator().next()
+                .getConstraintDescriptor()
+                .getAnnotation()
+                .annotationType()
+                .getSimpleName());
+
     }
 
 }
